@@ -2,6 +2,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -42,6 +43,151 @@ public class EventConfig {
         this.customerRetrievalRate = customerRetrievalRate;
     }
 
+    public EventConfig(){
+
+    }
+
+    public long getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(long vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        if (eventName.length() > 4){
+            this.eventName = eventName;
+            return;
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    public String getEventVenue() {
+        return eventVenue;
+    }
+
+    public void setEventVenue(String eventVenue) {
+        if (eventVenue.length() > 4) {
+            this.eventVenue = eventVenue;
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    public String getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(String ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(String eventDate) throws IllegalArgumentException {
+        // Define the expected date format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false); // Ensure strict parsing
+
+        try {
+            // Parse the input date
+            Date inputDate = sdf.parse(eventDate);
+            Date today = new Date(); // Current date
+
+            // Check if the date is greater than today
+            if (!inputDate.after(today)) {
+                throw new IllegalArgumentException("The event date must be greater than today's date.");
+            }
+
+            // If valid, set the event date
+            this.eventDate = eventDate;
+
+        } catch (ParseException e) {
+            // Handle invalid format
+            throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd.");
+        }
+    }
+
+    public String getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public String getEventCategory() {
+        return eventCategory;
+    }
+
+    public void setEventCategory(String eventCategory) {
+        this.eventCategory = eventCategory;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public double getVipDiscount() {
+        return vipDiscount;
+    }
+
+    public void setVipDiscount(double vipDiscount) {
+        this.vipDiscount = vipDiscount;
+    }
+
+    public int getTotalTickets() {
+        return totalTickets;
+    }
+
+    public void setTotalTickets(int totalTickets) {
+        this.totalTickets = totalTickets;
+    }
+
+    public int getMaximumPoolCapacity() {
+        return maximumPoolCapacity;
+    }
+
+    public void setMaximumPoolCapacity(int maximumPoolCapacity) {
+        this.maximumPoolCapacity = maximumPoolCapacity;
+    }
+
+    public int getTicketReleaseRate() {
+        return ticketReleaseRate;
+    }
+
+    public void setTicketReleaseRate(int ticketReleaseRate) {
+        this.ticketReleaseRate = ticketReleaseRate;
+    }
+
+    public int getCustomerRetrievalRate() {
+        return customerRetrievalRate;
+    }
+
+    public void setCustomerRetrievalRate(int customerRetrievalRate) {
+        this.customerRetrievalRate = customerRetrievalRate;
+    }
+
     public String toPayload() throws UnsupportedEncodingException {
         // Format the date to "yyyy-MM-dd HH:mm:ss.SSSSSS"
         SimpleDateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
@@ -64,20 +210,4 @@ public class EventConfig {
                 "&customerRetrievalRate=" + URLEncoder.encode(String.valueOf(customerRetrievalRate), "UTF-8");
     }
 
-    // Sending the request
-    public void sendRequest(String urlStr) throws Exception {
-        String payload = toPayload();
-        URL url = new URL(urlStr);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-        // Send the request payload
-        connection.getOutputStream().write(payload.getBytes("UTF-8"));
-
-        // Get the response
-        int responseCode = connection.getResponseCode();
-        System.out.println("Response Code: " + responseCode);
-    }
 }

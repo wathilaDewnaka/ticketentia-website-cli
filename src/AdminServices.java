@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,33 +28,42 @@ public class AdminServices {
             System.out.println("5. Logout");
             System.out.println("6. Exit\n");
 
-            System.out.print("Enter your choice : ");
-            int adminChoice = input.nextInt();
-            input.nextLine();
+            try {
+                System.out.print("Enter your choice : ");
+                int adminChoice = input.nextInt();
+                input.nextLine();
 
-            switch (adminChoice) {
-                case 1:
-                    seeAllVendors();
-                    break;
-                case 2:
-                    seeAllCustomers();
-                    break;
-                case 3:
-                    seeAllEvents();
-                    break;
-                case 4:
-                    addUser();
-                    break;
-                case 5:
-                    System.out.println("Logged out of the System !\n");
-                    return;
-                case 6:
-                    System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
-                    System.out.println("+            Goodbye ! Thank you for using this system !                    +");
-                    System.out.println("+               Developed By :- Wathila Karunathilake                       +");
-                    System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
-                    System.exit(0);
+                switch (adminChoice) {
+                    case 1:
+                        seeAllVendors();
+                        break;
+                    case 2:
+                        seeAllCustomers();
+                        break;
+                    case 3:
+                        seeAllEvents();
+                        break;
+                    case 4:
+                        addUser();
+                        break;
+                    case 5:
+                        System.out.println("Logged out of the System !\n");
+                        return;
+                    case 6:
+                        System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
+                        System.out.println("+            Goodbye ! Thank you for using this system !                    +");
+                        System.out.println("+               Developed By :- Wathila Karunathilake                       +");
+                        System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
+                        System.exit(0);
+                    default:
+                        throw new InputMismatchException("Invalid input");
+
+                }
+            } catch (InputMismatchException e){
+                input.nextLine();
+                System.out.println("Please enter your choice between 1 - 6\n");
             }
+
         }
     }
 

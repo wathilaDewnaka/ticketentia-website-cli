@@ -1,4 +1,5 @@
 import java.io.UnsupportedEncodingException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class VendorServices {
@@ -25,30 +26,35 @@ public class VendorServices {
             System.out.println("4. Logout");
             System.out.println("5. Exit\n");
 
-            System.out.print("Enter your choice: ");
-            int choice = input.nextInt();
-            input.nextLine();
+            try {
+                System.out.print("Enter your choice: ");
+                int choice = input.nextInt();
+                input.nextLine();
 
-            switch (choice) {
-                case 1:
-                    startSession();
-                    break;
-                case 2:
-                    loadActiveSessions();
-                    break;
-                case 3:
-                    loadInactiveSessions();
-                    break;
-                case 4:
-                    return;
-                case 5:
-                    System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
-                    System.out.println("+            Goodbye ! Thank you for using this system !                    +");
-                    System.out.println("+               Developed By :- Wathila Karunathilake                       +");
-                    System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
-                    System.exit(0);
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                switch (choice) {
+                    case 1:
+                        startSession();
+                        break;
+                    case 2:
+                        loadActiveSessions();
+                        break;
+                    case 3:
+                        loadInactiveSessions();
+                        break;
+                    case 4:
+                        return;
+                    case 5:
+                        System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
+                        System.out.println("+            Goodbye ! Thank you for using this system !                    +");
+                        System.out.println("+               Developed By :- Wathila Karunathilake                       +");
+                        System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
+                        System.exit(0);
+                    default:
+                        throw new InputMismatchException("Invalid input");
+                }
+            } catch (InputMismatchException e){
+                input.nextLine();
+                System.out.println("Please enter your choice between 1 - 5\n");
             }
         }
     }
