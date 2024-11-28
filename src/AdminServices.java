@@ -3,7 +3,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AdminServices {
-    private final Scanner input = new Scanner(System.in);
+    private Scanner input;
+    private HandleAPI handleAPI;
+
+    public AdminServices(){
+        this.input = new Scanner(System.in);
+        this.handleAPI = new HandleAPI(Storage.getJwtToken());
+    }
 
     public void showMenu(){
         while (true) {
@@ -56,7 +62,6 @@ public class AdminServices {
         System.out.println("+                         See All Vendors                                   +");
         System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
 
-        HandleAPI handleAPI = new HandleAPI();
         String allVendors = handleAPI.getAllVendors();
 
         printData(allVendors);
@@ -70,7 +75,6 @@ public class AdminServices {
         System.out.println("+                          See All Customers                                +");
         System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
 
-        HandleAPI handleAPI = new HandleAPI();
         String allCustomers = handleAPI.getAllCustomers();
 
         printData(allCustomers);
@@ -84,7 +88,6 @@ public class AdminServices {
         System.out.println("+                         See All Events                                    +");
         System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
 
-        HandleAPI handleAPI = new HandleAPI();
         String jsonEvents = handleAPI.getAllActiveEvents();
 
         printData(jsonEvents);
@@ -149,7 +152,6 @@ public class AdminServices {
         }
 
         User user = new AddUserConfig(email, password, firstName, lastName, country, telephone, address, brOrNICNumber, userType);
-        HandleAPI handleAPI = new HandleAPI();
         String response = handleAPI.addAccount(((AddUserConfig) user).toJson());
 
         System.out.println(response);
@@ -167,7 +169,6 @@ public class AdminServices {
         String password = input.nextLine();
 
         ManageAccountConfig manageAccountConfig = new UpdateAccountConfig(email, userRole, password);
-        HandleAPI handleAPI = new HandleAPI();
         handleAPI.updatePassword(manageAccountConfig.toJson());
     }
 
@@ -180,7 +181,6 @@ public class AdminServices {
         String email = input.nextLine();
 
         ManageAccountConfig manageAccountConfig = new ManageAccountConfig(email, userRole);
-        HandleAPI handleAPI = new HandleAPI();
         handleAPI.deleteAccount(manageAccountConfig.toJson());
     }
 
@@ -211,7 +211,6 @@ public class AdminServices {
         System.out.print("Enter the Session ID to stop : ");
         String sessionId = input.nextLine();
 
-        HandleAPI handleAPI = new HandleAPI();
         handleAPI.stopSession(sessionId);
     }
 

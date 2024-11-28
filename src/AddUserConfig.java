@@ -18,6 +18,10 @@ public class AddUserConfig extends User{
         this.userType = userType;
     }
 
+    public AddUserConfig(){
+        super();
+    }
+
     public String getFirstName() {
         return firstName;
     }

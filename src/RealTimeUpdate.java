@@ -4,7 +4,7 @@ public class RealTimeUpdate implements Runnable{
 
     public RealTimeUpdate(String sessionId) {
         this.sessionId = sessionId;
-        this.handleAPI = new HandleAPI();
+        this.handleAPI = new HandleAPI(Storage.getJwtToken());
     }
 
     @Override

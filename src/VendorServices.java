@@ -2,7 +2,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class VendorServices {
-    private final Scanner input = new Scanner(System.in);
+    private Scanner input;
+    private HandleAPI handleAPI;
+
+    public VendorServices(){
+        this.input = new Scanner(System.in);
+        this.handleAPI = new HandleAPI(Storage.getJwtToken());
+    }
 
     public void showMenu() {
         while (true) {
@@ -95,7 +101,6 @@ public class VendorServices {
         input.nextLine();
 
         EventConfig eventConfig = new EventConfig(1, eventName, eventVenue, ticketPrice, eventDate, eventTime, eventCategory, eventDescription, eventType, vipDiscount, totalTickets, maximumPoolCapacity, ticketReleaseRate, customerRetrievalRate);
-        HandleAPI handleAPI = new HandleAPI();
 
         try {
             handleAPI.startNewSession(eventConfig.toPayload());
@@ -110,9 +115,7 @@ public class VendorServices {
         System.out.println("+                          Inactive Sessions                                +");
         System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
 
-        HandleAPI handleAPI = new HandleAPI();
         String sessionJson = handleAPI.getSessionsInActive();
-
         printData(sessionJson);
 
 
@@ -123,7 +126,6 @@ public class VendorServices {
         System.out.println("+                           Active Sessions                                 +");
         System.out.println("+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+");
 
-        HandleAPI handleAPI = new HandleAPI();
         String sessionJson = handleAPI.getSessions();
 
         printData(sessionJson);
@@ -155,7 +157,6 @@ public class VendorServices {
         System.out.print("Enter the Session ID to stop : ");
         String sessionId = input.nextLine();
 
-        HandleAPI handleAPI = new HandleAPI();
         handleAPI.stopSession(sessionId);
     }
 

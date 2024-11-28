@@ -9,6 +9,10 @@ public abstract class User {
         this.setPassword(password);
     }
 
+    public User(){
+
+    }
+
     public String getEmail() {
         return email;
     }
@@ -27,7 +31,11 @@ public abstract class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (password.length() >= 6){
+            this.password = password;
+            return;
+        }
+        throw new IllegalArgumentException("Invalid password entered");
     }
 
     private boolean isValidEmail(String email) {
