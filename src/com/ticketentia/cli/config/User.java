@@ -1,3 +1,5 @@
+package com.ticketentia.cli.config;
+
 import java.util.regex.Pattern;
 
 public abstract class User {

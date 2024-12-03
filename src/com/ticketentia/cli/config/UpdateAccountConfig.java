@@ -1,3 +1,5 @@
+package com.ticketentia.cli.config;
+
 public class UpdateAccountConfig extends ManageAccountConfig {
     private String password;
 
@@ -6,20 +8,16 @@ public class UpdateAccountConfig extends ManageAccountConfig {
         this.password = password;
     }
 
+    public UpdateAccountConfig(){
+        super();
+
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public String toJson() {
-        return "{" +
-                "\"email\":\"" + getEmail() + "\"," +
-                "\"userType\":\"" + getUserType() + "\"," +
-                "\"password\":\"" + password + "\"" +
-                "}";
     }
 }

@@ -1,4 +1,6 @@
-public class LoginConfig extends User{
+package com.ticketentia.cli.config;
+
+public class LoginConfig extends User {
     private String userType;
 
     public LoginConfig(){
@@ -16,12 +18,5 @@ public class LoginConfig extends User{
 
     public void setUserType(String userType) {
         this.userType = userType;
-    }
-
-    public String toJson() {
-        return String.format(
-                "{\"email\":\"%s\",\"password\":\"%s\",\"userType\":\"%s\"}",
-                getEmail(), getPassword(), userType
-        );
     }
 }

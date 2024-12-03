@@ -1,3 +1,7 @@
+package com.ticketentia.cli.api;
+
+import com.ticketentia.cli.config.ApiClient;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;

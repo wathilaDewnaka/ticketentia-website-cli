@@ -1,3 +1,7 @@
+package com.ticketentia.cli.api;
+
+import com.ticketentia.cli.config.ApiClient;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
@@ -13,12 +17,17 @@ public class PostRequestHandle extends ApiClient {
     public String execute(String uri, String method, String bodyData) throws IOException, InterruptedException {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
-                .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(bodyData, StandardCharsets.UTF_8));
 
         String token = getToken();
         if (token != null) {
             requestBuilder.header("Authorization", "Bearer " + token);
+        }
+
+        if (method.equals("POST")){
+            requestBuilder.header("Content-Type", "application/json");
+        } else {
+            requestBuilder.header("Content-Type", "application/x-www-form-urlencoded");
         }
 
         HttpRequest request = requestBuilder.build();

@@ -1,16 +1,18 @@
+package com.ticketentia.cli.config;
+
+import com.ticketentia.cli.enums.EventType;
+
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class EventConfig {
-    private long vendorId;
     private String eventName;
     private String eventVenue;
-    private String ticketPrice;
+    private double ticketPrice;
     private String eventDate;
     private String eventTime;
     private String eventCategory;
@@ -23,11 +25,10 @@ public class EventConfig {
     private int customerRetrievalRate;
 
     // Constructor
-    public EventConfig(long vendorId, String eventName, String eventVenue, String ticketPrice, String eventDate,
+    public EventConfig(String eventName, String eventVenue, double ticketPrice, String eventDate,
                        String eventTime, String eventCategory, String eventDescription,
                        String eventType, double vipDiscount, int totalTickets,
                        int maximumPoolCapacity, int ticketReleaseRate, int customerRetrievalRate) {
-        this.vendorId = vendorId;
         this.eventName = eventName;
         this.eventVenue = eventVenue;
         this.ticketPrice = ticketPrice;
@@ -47,20 +48,12 @@ public class EventConfig {
 
     }
 
-    public long getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(long vendorId) {
-        this.vendorId = vendorId;
-    }
-
     public String getEventName() {
         return eventName;
     }
 
     public void setEventName(String eventName) {
-        if (eventName.length() > 4){
+        if (eventName.length() >= 4){
             this.eventName = eventName;
             return;
         }
@@ -68,25 +61,32 @@ public class EventConfig {
         throw new IllegalArgumentException();
     }
 
+    public double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(double ticketPrice) {
+        if (ticketPrice <= 100){
+            throw new IllegalArgumentException();
+        }
+
+        this.ticketPrice = ticketPrice;
+    }
+
     public String getEventVenue() {
         return eventVenue;
     }
 
     public void setEventVenue(String eventVenue) {
-        if (eventVenue.length() > 4) {
+        if (eventVenue.length() >= 4) {
             this.eventVenue = eventVenue;
+            return;
         }
 
         throw new IllegalArgumentException();
     }
 
-    public String getTicketPrice() {
-        return ticketPrice;
-    }
 
-    public void setTicketPrice(String ticketPrice) {
-        this.ticketPrice = ticketPrice;
-    }
 
     public String getEventDate() {
         return eventDate;
@@ -121,6 +121,10 @@ public class EventConfig {
     }
 
     public void setEventTime(String eventTime) {
+        String timePattern = "^([01]\\d|2[0-3]):([0-5]\\d)$";
+        if (!eventTime.matches(timePattern)){
+            throw new IllegalArgumentException();
+        }
         this.eventTime = eventTime;
     }
 
@@ -129,6 +133,14 @@ public class EventConfig {
     }
 
     public void setEventCategory(String eventCategory) {
+        if (!(eventCategory.equals("LIVE CONCERT") ||
+                eventCategory.equals("WEBINAR") ||
+                eventCategory.equals("WORKSHOP") ||
+                eventCategory.equals("MUSICAL CONCERT") ||
+                eventCategory.equals("CONFERENCE"))) {
+            throw new IllegalArgumentException();
+        }
+
         this.eventCategory = eventCategory;
     }
 
@@ -137,6 +149,10 @@ public class EventConfig {
     }
 
     public void setEventDescription(String eventDescription) {
+        if (eventDescription.length() < 20){
+            throw new IllegalArgumentException();
+        }
+
         this.eventDescription = eventDescription;
     }
 
@@ -145,6 +161,9 @@ public class EventConfig {
     }
 
     public void setEventType(String eventType) {
+        if (!(eventType.equals(EventType.VIP.name()) || eventType.equals(EventType.REGULAR.name()))){
+            throw new IllegalArgumentException();
+        }
         this.eventType = eventType;
     }
 
@@ -153,6 +172,10 @@ public class EventConfig {
     }
 
     public void setVipDiscount(double vipDiscount) {
+        if (vipDiscount > 60 || vipDiscount < 0){
+            throw new IllegalArgumentException();
+        }
+
         this.vipDiscount = vipDiscount;
     }
 
@@ -161,6 +184,9 @@ public class EventConfig {
     }
 
     public void setTotalTickets(int totalTickets) {
+        if (totalTickets < 10){
+            throw new IllegalArgumentException();
+        }
         this.totalTickets = totalTickets;
     }
 
@@ -169,6 +195,9 @@ public class EventConfig {
     }
 
     public void setMaximumPoolCapacity(int maximumPoolCapacity) {
+        if (maximumPoolCapacity >= totalTickets || maximumPoolCapacity < 5){
+            throw new IllegalArgumentException();
+        }
         this.maximumPoolCapacity = maximumPoolCapacity;
     }
 
@@ -177,6 +206,9 @@ public class EventConfig {
     }
 
     public void setTicketReleaseRate(int ticketReleaseRate) {
+        if (ticketReleaseRate <= 0 || ticketReleaseRate > 10){
+            throw new IllegalArgumentException();
+        }
         this.ticketReleaseRate = ticketReleaseRate;
     }
 
@@ -185,29 +217,45 @@ public class EventConfig {
     }
 
     public void setCustomerRetrievalRate(int customerRetrievalRate) {
+        if (customerRetrievalRate <= 0 || customerRetrievalRate > 10){
+            throw new IllegalArgumentException();
+        }
         this.customerRetrievalRate = customerRetrievalRate;
     }
 
     public String toPayload() throws UnsupportedEncodingException {
         // Format the date to "yyyy-MM-dd HH:mm:ss.SSSSSS"
-        SimpleDateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
-        String eventDateString = preciseDateFormat.format(new Date());
-        System.out.println("Formatted eventDate: " + eventDateString);
+        // Parse the input date
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(getEventDate());
 
-        return "vendorId=" + URLEncoder.encode(String.valueOf(vendorId), "UTF-8") +
-                "&eventName=" + URLEncoder.encode(eventName, "UTF-8") +
-                "&eventVenue=" + URLEncoder.encode(eventVenue, "UTF-8") +
-                "&ticketPrice=" + URLEncoder.encode(ticketPrice, "UTF-8") +
-                "&eventDate=" + URLEncoder.encode("2024-11-28 00:00:00.000000", "UTF-8") + // Use the precise date format
-                "&eventTime=" + URLEncoder.encode(eventTime, "UTF-8") +
-                "&eventCategory=" + URLEncoder.encode(eventCategory, "UTF-8") +
-                "&eventDescription=" + URLEncoder.encode(eventDescription, "UTF-8") +
-                "&eventType=" + URLEncoder.encode(eventType, "UTF-8") +
-                "&vipDiscount=" + URLEncoder.encode(String.valueOf(vipDiscount), "UTF-8") +
-                "&totalTickets=" + URLEncoder.encode(String.valueOf(totalTickets), "UTF-8") +
-                "&maxTicketCapacity=" + URLEncoder.encode(String.valueOf(maximumPoolCapacity), "UTF-8") +
-                "&ticketReleaseRate=" + URLEncoder.encode(String.valueOf(ticketReleaseRate), "UTF-8") +
-                "&customerRetrievalRate=" + URLEncoder.encode(String.valueOf(customerRetrievalRate), "UTF-8");
+            // Desired output format
+            SimpleDateFormat outputFormat = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'Z (z)");
+            outputFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata")); // Set the timezone
+
+            // Format the date
+            String formattedDate = outputFormat.format(date);
+            Storage storage = Storage.getInstance();
+            System.out.println(storage.getUserId());
+            return "vendorId=" + URLEncoder.encode(String.valueOf(storage.getUserId()), "UTF-8") +
+                    "&eventName=" + URLEncoder.encode(eventName, "UTF-8") +
+                    "&eventVenue=" + URLEncoder.encode(eventVenue, "UTF-8") +
+                    "&ticketPrice=" + URLEncoder.encode(String.valueOf(ticketPrice), "UTF-8") +
+                    "&eventDate=" + URLEncoder.encode(formattedDate, "UTF-8") + // Use the precise date format
+                    "&eventTime=" + URLEncoder.encode(eventTime, "UTF-8") +
+                    "&eventCategory=" + URLEncoder.encode(eventCategory, "UTF-8") +
+                    "&eventDescription=" + URLEncoder.encode(eventDescription, "UTF-8") +
+                    "&eventType=" + URLEncoder.encode(eventType, "UTF-8") +
+                    "&vipDiscount=" + URLEncoder.encode(String.valueOf(vipDiscount), "UTF-8") +
+                    "&totalTickets=" + URLEncoder.encode(String.valueOf(totalTickets), "UTF-8") +
+                    "&maxTicketCapacity=" + URLEncoder.encode(String.valueOf(maximumPoolCapacity), "UTF-8") +
+                    "&ticketReleaseRate=" + URLEncoder.encode(String.valueOf(ticketReleaseRate), "UTF-8") +
+                    "&customerRetrievalRate=" + URLEncoder.encode(String.valueOf(customerRetrievalRate), "UTF-8");
+
+        } catch (Exception e){
+            return null;
+        }
     }
 
 }

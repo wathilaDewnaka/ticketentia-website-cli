@@ -1,4 +1,9 @@
-public class AddUserConfig extends User{
+package com.ticketentia.cli.config;
+
+import com.ticketentia.cli.enums.AccountType;
+import java.util.Objects;
+
+public class AddUserConfig extends User {
     private String firstName;
     private String lastName;
     private String country;
@@ -27,6 +32,9 @@ public class AddUserConfig extends User{
     }
 
     public void setFirstName(String firstName) {
+        if (firstName.length() < 4){
+            throw new IllegalArgumentException();
+        }
         this.firstName = firstName;
     }
 
@@ -43,6 +51,9 @@ public class AddUserConfig extends User{
     }
 
     public void setCountry(String country) {
+        if (country.length() <= 0){
+            throw new IllegalArgumentException();
+        }
         this.country = country;
     }
 
@@ -51,6 +62,10 @@ public class AddUserConfig extends User{
     }
 
     public void setTelephone(String telephone) {
+        if (telephone.length() < 9){
+            throw new IllegalArgumentException();
+        }
+
         this.telephone = telephone;
     }
 
@@ -59,6 +74,9 @@ public class AddUserConfig extends User{
     }
 
     public void setAddress(String address) {
+        if (address.length() < 5){
+            throw new IllegalArgumentException();
+        }
         this.address = address;
     }
 
@@ -67,6 +85,9 @@ public class AddUserConfig extends User{
     }
 
     public void setBrOrNICNumber(String brOrNICNumber) {
+        if (brOrNICNumber.length() < 5 || brOrNICNumber.length() > 12){
+            throw new IllegalArgumentException();
+        }
         this.brOrNICNumber = brOrNICNumber;
     }
 
@@ -75,21 +96,11 @@ public class AddUserConfig extends User{
     }
 
     public void setUserType(String userType) {
-        this.userType = userType;
-    }
+        if (Objects.equals(userType, AccountType.CUSTOMER.name()) || Objects.equals(userType, AccountType.VENDOR.name())){
+            this.userType = userType;
+            return;
+        }
+        throw new IllegalArgumentException();
 
-    public String toJson() {
-        // Manually construct the JSON string with username and password included
-        return "{"
-                + "\"email\": \"" + getEmail() + "\", "  // Assuming getEmail() in the User class
-                + "\"password\": \"" + getPassword() + "\", "  // Assuming getPassword() in the User class
-                + "\"firstName\": \"" + firstName + "\", "
-                + "\"lastName\": \"" + lastName + "\", "
-                + "\"country\": \"" + country + "\", "
-                + "\"telephone\": \"" + telephone + "\", "
-                + "\"address\": \"" + address + "\", "
-                + "\"brOrNICNumber\": \"" + brOrNICNumber + "\", "
-                + "\"userType\": \"" + userType + "\""
-                + "}";
     }
 }
