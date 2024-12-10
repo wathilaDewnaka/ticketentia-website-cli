@@ -313,7 +313,7 @@ public class AdminServices {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String response = handleAPI.updatePassword(gson.toJson(manageAccountConfig));
 
-        System.out.println(response != null ? "User added successfully !\n" : "Internal server error !\n");
+        System.out.println(response != null ? "User updated successfully !\n" : "Internal server error !\n");
     }
 
     public void deleteAccount(String userRole){
